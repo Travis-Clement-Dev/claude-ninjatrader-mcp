@@ -1,0 +1,9 @@
+# OCM Footprint MCP server runtime dependencies.
+# Install into a project-local venv:
+#   py -m venv .venv
+#   .venv\Scripts\python -m pip install -r requirements.txt
+#
+# Stage C transport is the file-drop, so only the MCP SDK is needed.
+# httpx will be added in Stage D when the HTTP live layer lands.
+
+mcp>=1.27.0

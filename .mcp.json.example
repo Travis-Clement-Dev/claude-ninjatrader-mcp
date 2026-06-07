@@ -1,0 +1,12 @@
+{
+  "_comment": "Copy this to your MCP client config (e.g. project .mcp.json) and replace ABSOLUTE_PATH_TO_REPO with this repo's full path. On Windows use double backslashes in JSON, e.g. C:\\Users\\you\\claude-ninjatrader-mcp.",
+  "mcpServers": {
+    "ninjatrader-orderflow": {
+      "command": "ABSOLUTE_PATH_TO_REPO/mcp-server/.venv/Scripts/python.exe",
+      "args": ["ABSOLUTE_PATH_TO_REPO/mcp-server/server.py"],
+      "env": {
+        "OCM_SNAPSHOT_DIR": "C:/Users/you/Documents/NinjaTrader 8/OCM/footprint_snapshots"
+      }
+    }
+  }
+}

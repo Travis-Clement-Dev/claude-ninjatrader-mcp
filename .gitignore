@@ -1,0 +1,20 @@
+# .NET build artifacts
+bin/
+obj/
+*.user
+*.suo
+.vs/
+
+# Python (MCP server, Stage C)
+mcp-server/.venv/
+__pycache__/
+*.pyc
+
+# Local config & runtime data (never commit)
+.mcp.json
+output/
+*.tmp
+
+# OS cruft
+Thumbs.db
+desktop.ini
