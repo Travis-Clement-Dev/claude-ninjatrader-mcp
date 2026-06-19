@@ -8,6 +8,32 @@ A NinjaScript indicator reconstructs bid/ask-at-price from `OnMarketData` (the s
 
 ---
 
+## See it in action
+
+Attach the indicator, register the MCP server, and ask Claude what the order flow
+is doing. It reads the live bid/ask ladder, delta, and imbalances through the
+bridge and turns them into a read:
+
+> **You:** What is NQ order flow doing this session?
+>
+> **Claude:** *(calls `get_orderflow_summary`, `get_footprint`)* A morning flush
+> into ~30545 (cumulative delta -698, five stacked sell runs) was absorbed by a
+> single 3,554-contract bar at 09:00 ET (delta +360, ten stacked buy runs) that
+> set the session low. Price ground up to 30700, then a -363 delta bar rejected
+> it. Now price is retesting 30700 with bearish delta divergence (price up, delta
+> -21) and cumulative delta back to -192. 30700 is supply; 30653 and 30545 are
+> the downside references.
+
+![Claude reading live NQ order flow through the bridge](docs/claude-orderflow-read.png)
+
+The bridge also serves an occlusion-proof chart screenshot, rendered by
+NinjaTrader itself so it stays correct even when the window is buried behind
+other apps:
+
+![The Claude NinjaTrader MCP indicator on a live NQ chart](docs/ninjatrader-chart.png)
+
+---
+
 ## Why this exists
 
 Most "NinjaTrader + AI" projects are *general* control servers (place orders, read positions). This one is deliberately narrow and safe:
