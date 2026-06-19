@@ -31,7 +31,7 @@ Most "NinjaTrader + AI" projects are *general* control servers (place orders, re
 NinjaTrader 8 chart (Tick Replay ON)
         │  OnMarketData  → reconstruct bid/ask-at-price (no Volumetric)
         ▼
-OCM Footprint Bridge  (NinjaScript indicator)
+Claude NinjaTrader MCP  (NinjaScript indicator)
         │  atomic JSON snapshot  +  loopback HTTP  (/footprint, /screenshot, /health)
         ▼
 Python MCP server  (stdio)  → computes analytics, exposes tools
@@ -48,11 +48,11 @@ Claude / any MCP client
 ## Install — step by step
 
 **1. Install the NinjaScript indicator**
-- Copy `OCMFootprintBridge/OCMFootprintBridge.cs` → `Documents\NinjaTrader 8\bin\Custom\Indicators\`.
+- Copy `ClaudeNinjaTraderMCP/ClaudeNinjaTraderMCP.cs` → `Documents\NinjaTrader 8\bin\Custom\Indicators\`.
 - In NinjaTrader: **New → NinjaScript Editor → press F5** to compile. *(Ship the class only — NinjaTrader generates its own wrapper region on compile.)*
 
 **2. Add it to a chart**
-- Open a chart (e.g. MNQ, 1-minute), **Indicators → "OCM Footprint Bridge" → add**.
+- Open a chart (e.g. MNQ, 1-minute), **Indicators → "Claude NinjaTrader MCP" → add**.
 - Recommended: turn **Tick Replay ON** for the series. The indicator runs `Calculate.OnEachTick` (read-only).
 - It writes snapshots to `Documents\NinjaTrader 8\OCM\footprint_snapshots\` by default (configurable in the indicator's properties).
 

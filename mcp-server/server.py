@@ -1,5 +1,5 @@
 """
-OCM Footprint MCP server — exposes the NinjaTrader order-flow snapshot + analytics to Claude.
+Claude NinjaTrader MCP server — exposes the NinjaTrader order-flow snapshot + analytics to Claude.
 
 Reads the bridge's JSON file-drop (Stage C transport = file; HTTP arrives in Stage D),
 computes analytics (imbalances / divergence / POC / value area) via footprint.py, and
@@ -122,7 +122,7 @@ async def list_tools() -> list[Tool]:
             name="get_screenshot",
             description=(
                 "Capture the NinjaTrader chart and return it as a PNG image. PRIMARY path is "
-                "bridge-side: the OCM Footprint Bridge indicator renders the chart window via "
+                "bridge-side: the Claude NinjaTrader MCP indicator renders the chart window via "
                 "NinjaTrader's own GetScreenshot over a loopback HTTP endpoint — this is "
                 "OCCLUSION-PROOF and Direct2D-correct (works even if the chart is buried behind "
                 "other windows or off-screen). Use it to see the live chart/footprint. Optionally "
@@ -204,7 +204,7 @@ async def call_tool(name: str, arguments: dict[str, Any]) -> list[TextContent | 
                 data = fh.read()
         except Exception as e:  # noqa: BLE001
             return _text({"error": f"screenshot failed: bridge HTTP unavailable (port={port}) "
-                                   f"and screen-grab errored: {e}. Is the OCM Footprint Bridge "
+                                   f"and screen-grab errored: {e}. Is the Claude NinjaTrader MCP "
                                    f"indicator on a chart, or is NinjaTrader visible?"})
         b64 = base64.b64encode(data).decode("ascii")
         logger.info("get_screenshot via screen-grab window=%r -> %d bytes", window, len(data))
@@ -214,7 +214,7 @@ async def call_tool(name: str, arguments: dict[str, Any]) -> list[TextContent | 
     period = arguments.get("period")
     path, snap = _load(instrument, period)
     if snap is None:
-        return _text({"error": "No footprint snapshot found. Is the 'OCM Footprint Bridge' "
+        return _text({"error": "No footprint snapshot found. Is the 'Claude NinjaTrader MCP' "
                                "indicator attached to a chart in NinjaTrader (and a bar closed yet)?",
                       "snapshotDir": fp.DEFAULT_SNAPSHOT_DIR})
 

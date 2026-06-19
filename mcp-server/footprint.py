@@ -1,5 +1,5 @@
 """
-OCM Footprint analytics — pure stdlib, NO MCP dependency (so it's testable standalone).
+Footprint analytics — pure stdlib, NO MCP dependency (so it's testable standalone).
 
 Loads the bridge's JSON snapshot, filters to *captured* bars (non-empty ladder),
 and computes order-flow analytics: diagonal imbalances (+ stacked runs), delta

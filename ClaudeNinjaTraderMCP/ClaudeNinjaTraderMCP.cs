@@ -1,5 +1,5 @@
 //
-// OCM Footprint Bridge — Stage B (full capture layer)
+// Claude NinjaTrader MCP — Stage B (full capture layer)
 //
 // Reconstructs order flow (bid/ask-at-price) from live OnMarketData — NO native
 // Volumetric license needed (proven in Stage A: 100% volume reconciliation) — and
@@ -35,10 +35,10 @@ using NinjaTrader.NinjaScript.DrawingTools;
 namespace NinjaTrader.NinjaScript.Indicators
 {
 	/// <summary>
-	/// OCM Footprint Bridge — captures order flow from OnMarketData and writes a rolling
+	/// Claude NinjaTrader MCP — captures order flow from OnMarketData and writes a rolling
 	/// last-N-bars JSON snapshot (schema ocm-footprint/v1). Read-only market data.
 	/// </summary>
-	public class OCMFootprintBridge : Indicator
+	public class ClaudeNinjaTraderMCP : Indicator
 	{
 		// Immutable-once-built model of a closed bar.
 		private sealed class FpBar
@@ -58,7 +58,7 @@ namespace NinjaTrader.NinjaScript.Indicators
 		private long	cumulativeDelta;					// session running total
 		private readonly List<FpBar> bars = new List<FpBar>(); // ring buffer of closed bars
 		private volatile string	snapshotJson = "";			// single-builder groundwork (read by HTTP thread in Stage D)
-		private string	statusLine = "OCM Bridge: waiting for data…";
+		private string	statusLine = "Claude NinjaTrader MCP: waiting for data…";
 		private bool			chartCaptureDone;			// Stage A: one-shot smoke capture succeeded
 		private volatile bool	captureInFlight;			// re-entrancy guard for the Dispatcher capture
 
@@ -74,8 +74,8 @@ namespace NinjaTrader.NinjaScript.Indicators
 		{
 			if (State == State.SetDefaults)
 			{
-				Description			= @"OCM Footprint Bridge — reconstructs bid/ask-at-price from OnMarketData (no Volumetric) and writes a rolling last-N-bars JSON snapshot for the Claude MCP server. Read-only market data.";
-				Name				= "OCM Footprint Bridge";
+				Description			= @"Claude NinjaTrader MCP — reconstructs bid/ask-at-price from OnMarketData (no Volumetric) and writes a rolling last-N-bars JSON snapshot for the Claude MCP server. Read-only market data.";
+				Name				= "Claude NinjaTrader MCP";
 				Calculate			= Calculate.OnEachTick;	// OnMarketData requires realtime tick processing
 				IsOverlay			= true;
 				IsChartOnly			= true;
@@ -149,7 +149,7 @@ namespace NinjaTrader.NinjaScript.Indicators
 			if (IsFirstTickOfBar && CurrentBar >= 1)
 			{
 				try { FinalizeClosedBar(); }
-				catch (Exception ex) { Log("OCM Footprint Bridge error: " + ex.Message, LogLevel.Warning); }
+				catch (Exception ex) { Log("Claude NinjaTrader MCP error: " + ex.Message, LogLevel.Warning); }
 
 				curBid.Clear();
 				curAsk.Clear();
@@ -220,7 +220,7 @@ namespace NinjaTrader.NinjaScript.Indicators
 			if (EnableSnapshot)
 				WriteSnapshot(snapshotJson);
 
-			statusLine = "OCM Bridge: " + bar.TimeUtc.ToLocalTime().ToString("HH:mm:ss")
+			statusLine = "Claude NinjaTrader MCP: " + bar.TimeUtc.ToLocalTime().ToString("HH:mm:ss")
 				+ "  bars=" + bars.Count + "  vol=" + bar.TotalVolume + "  Δ=" + delta + "  cumΔ=" + cumulativeDelta;
 		}
 
@@ -377,15 +377,15 @@ namespace NinjaTrader.NinjaScript.Indicators
 					httpCts      = new CancellationTokenSource();
 					httpLoop     = Task.Run(() => HttpAcceptLoopAsync(httpCts.Token));
 					WritePortFile();
-					Log("OCM Bridge HTTP listening on http://127.0.0.1:" + port + "/ (screenshot,footprint,health)", LogLevel.Information);
+					Log("Claude NinjaTrader MCP HTTP listening on http://127.0.0.1:" + port + "/ (screenshot,footprint,health)", LogLevel.Information);
 					return;
 				}
 				catch (Exception ex)
 				{
-					Log("OCM Bridge HTTP bind " + port + " failed: " + ex.Message, LogLevel.Warning);
+					Log("Claude NinjaTrader MCP HTTP bind " + port + " failed: " + ex.Message, LogLevel.Warning);
 				}
 			}
-			Log("OCM Bridge HTTP: no free port in " + PortStart + "-" + PortEnd, LogLevel.Warning);
+			Log("Claude NinjaTrader MCP HTTP: no free port in " + PortStart + "-" + PortEnd, LogLevel.Warning);
 		}
 
 		private void StopHttp()
@@ -506,7 +506,7 @@ namespace NinjaTrader.NinjaScript.Indicators
 			MethodInfo compile = compilerType.GetMethod("Compile", BindingFlags.Public | BindingFlags.Static);
 			if (compile == null) { WriteRecompileResult(false, "Compiler.Compile(...) not found"); return; }
 
-			Log("OCM Bridge: recompile triggered (Compiler.Compile)…", LogLevel.Information);
+			Log("Claude NinjaTrader MCP: recompile triggered (Compiler.Compile)…", LogLevel.Information);
 			// Compile(checkCompileOnly:false, debugBuild:false, filesToIgnore:[], filesInTmp:[])
 			object emit = compile.Invoke(null, new object[] { false, false, new string[0], new string[0] });
 
@@ -530,7 +530,7 @@ namespace NinjaTrader.NinjaScript.Indicators
 				}
 			}
 			WriteRecompileResult(success, errs.ToString());
-			Log("OCM Bridge: compile " + (success ? "OK" : "FAILED") + (success ? " — firing reload" : ""), success ? LogLevel.Information : LogLevel.Warning);
+			Log("Claude NinjaTrader MCP: compile " + (success ? "OK" : "FAILED") + (success ? " — firing reload" : ""), success ? LogLevel.Information : LogLevel.Warning);
 
 			// Compile() only EMITS the assembly; the in-process RELOAD (re-instantiating NinjaScript
 			// from it) is driven by the CompileCompleted event, raised by the internal
@@ -541,7 +541,7 @@ namespace NinjaTrader.NinjaScript.Indicators
 			{
 				MethodInfo invoke = compilerType.GetMethod("InvokeCompileCompleted", BindingFlags.NonPublic | BindingFlags.Static);
 				if (invoke != null) invoke.Invoke(null, null);
-				else Log("OCM Bridge: InvokeCompileCompleted not found — compiled but NOT reloaded", LogLevel.Warning);
+				else Log("Claude NinjaTrader MCP: InvokeCompileCompleted not found — compiled but NOT reloaded", LogLevel.Warning);
 			}
 		}
 
@@ -574,7 +574,7 @@ namespace NinjaTrader.NinjaScript.Indicators
 		private void ServeIndex(HttpListenerContext ctx)
 		{
 			WriteText(ctx, 200, "text/plain",
-				"OCM Footprint Bridge " + Version + " port " + httpPort + "\n"
+				"Claude NinjaTrader MCP " + Version + " port " + httpPort + "\n"
 				+ "GET /screenshot - live whole-window chart PNG (on-demand)\n"
 				+ "GET /footprint  - latest rolling footprint JSON\n"
 				+ "GET /recompile  - trigger NinjaScript compile+reload (dev; AllowRecompile=" + AllowRecompile + ")\n"

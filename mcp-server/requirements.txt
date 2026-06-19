@@ -1,4 +1,4 @@
-# OCM Footprint MCP server runtime dependencies.
+# Claude NinjaTrader MCP server runtime dependencies.
 # Install into a project-local venv:
 #   py -m venv .venv
 #   .venv\Scripts\python -m pip install -r requirements.txt
